@@ -2006,7 +2006,7 @@ button {
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 2000;
+  z-index: 2100;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -2233,6 +2233,13 @@ button {
   padding: 20px 25px 30px;
   background-color: var(--surface-light);
   border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+  .cart-drawer-footer {
+    padding-bottom: 100px;
+    /* Accounts for Mobile Bottom Nav */
+  }
 }
 
 .cart-drawer-icons {
