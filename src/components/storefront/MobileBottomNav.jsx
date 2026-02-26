@@ -1,8 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Grid, Heart, User } from 'lucide-react';
+import { Home, Grid, Heart, User, Search } from 'lucide-react';
+import { useStore } from '../../context/StoreContext';
 
 const MobileBottomNav = () => {
+    const { setIsSearchOpen } = useStore();
     return (
         <nav className="mobile-bottom-nav">
             <NavLink to="/" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`} end>
@@ -13,6 +15,10 @@ const MobileBottomNav = () => {
                 <Grid size={22} />
                 <span>Store</span>
             </NavLink>
+            <button className="bottom-nav-item" onClick={() => setIsSearchOpen(true)}>
+                <Search size={22} />
+                <span>Search</span>
+            </button>
             <NavLink to="/wishlist" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
                 <Heart size={22} />
                 <span>Wishlist</span>
