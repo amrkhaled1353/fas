@@ -1,0 +1,410 @@
+{
+  "products": [
+    {
+      "name": "ARTMED THE ONE SPLASH 120ML",
+      "price": 250,
+      "oldPrice": null,
+      "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80",
+        "https://images.unsplash.com/photo-1606502973842-f64bc2785fe5?w=800&q=80"
+      ],
+      "categoryId": "c2",
+      "description": "Premium body splash with long lasting fragrance.",
+      "isTrending": true,
+      "isPopular": true,
+      "id": "p1"
+    },
+    {
+      "name": "5D WHITE TEETH WHITENNING 1 STRIP",
+      "price": 500,
+      "oldPrice": 1000,
+      "stock": 2,
+      "image": "https://images.unsplash.com/photo-1606502973842-f64bc2785fe5?w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1606502973842-f64bc2785fe5?w=800&q=80",
+        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=800&q=80"
+      ],
+      "categoryId": "c1",
+      "description": "Effective teeth whitening strip.",
+      "isTrending": true,
+      "isPopular": true,
+      "id": "p2"
+    },
+    {
+      "id": "p3",
+      "name": "SPA GEL SOCKS",
+      "price": 120,
+      "image": "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=800&q=80",
+      "categoryId": "c3",
+      "description": "Moisturizing gel socks for soft feet.",
+      "isTrending": true,
+      "isPopular": true,
+      "images": [
+        "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=800&q=80",
+        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80"
+      ]
+    },
+    {
+      "id": "p4",
+      "name": "HAIR BRUSH PRO",
+      "price": 85,
+      "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80",
+      "categoryId": "c1",
+      "description": "Professional styling hair brush.",
+      "isTrending": true,
+      "isPopular": true,
+      "images": [
+        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80",
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80"
+      ]
+    },
+    {
+      "id": "p5",
+      "name": "FACE CLEANSING FOAM",
+      "price": 140,
+      "image": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80",
+      "categoryId": "c2",
+      "description": "Gentle daily face wash.",
+      "isTrending": true,
+      "isPopular": true,
+      "images": [
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80",
+        "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=800&q=80"
+      ]
+    },
+    {
+      "id": "p6",
+      "name": "MATTE LIPSTICK NO.5",
+      "price": 95,
+      "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=800&q=80",
+      "categoryId": "c1",
+      "description": "Long lasting matte finish.",
+      "isTrending": true,
+      "isPopular": true,
+      "images": [
+        "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=800&q=80",
+        "https://images.unsplash.com/photo-1556228720-1c276c5f7e6f?w=800&q=80"
+      ]
+    },
+    {
+      "id": "p7",
+      "name": "SUNSCREEN SPF 50",
+      "price": 300,
+      "image": "https://images.unsplash.com/photo-1556228720-1c276c5f7e6f?w=800&q=80",
+      "categoryId": "c2",
+      "description": "High protection sunblock.",
+      "isTrending": true,
+      "isPopular": true,
+      "images": [
+        "https://images.unsplash.com/photo-1556228720-1c276c5f7e6f?w=800&q=80",
+        "https://images.unsplash.com/photo-1616683693504-3ea7e9add6fec?w=800&q=80"
+      ]
+    },
+    {
+      "id": "p1771636624111",
+      "name": "بيسيب",
+      "price": 55,
+      "image": "https://images.unsplash.com/photo-1616683693504-3ea7e9add6fec?w=800&q=80",
+      "categoryId": "c1",
+      "description": "سيبسيبس",
+      "isTrending": false,
+      "isPopular": true,
+      "images": [
+        "https://images.unsplash.com/photo-1616683693504-3ea7e9add6fec?w=800&q=80",
+        "https://images.unsplash.com/photo-1590156546946-ce55a12a6a5d?w=800&q=80"
+      ]
+    },
+    {
+      "id": "ptest1",
+      "name": "Test",
+      "price": 100,
+      "image": "https://images.unsplash.com/photo-1590156546946-ce55a12a6a5d?w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1590156546946-ce55a12a6a5d?w=800&q=80",
+        "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80"
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "id": "c1",
+      "name": "Trending Now",
+      "image": "https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&q=80"
+    },
+    {
+      "id": "c2",
+      "name": "Best Sellers",
+      "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80"
+    },
+    {
+      "id": "c3",
+      "name": "New Arrivals",
+      "image": "https://images.unsplash.com/photo-1571781926291-c477eb31f7d8?w=800&q=80"
+    },
+    {
+      "id": "c4",
+      "name": "Lenses",
+      "image": "https://images.unsplash.com/photo-1512496015851-a1abc2f2b3e8?w=800&q=80"
+    },
+    {
+      "id": "c1771645617601",
+      "name": "يبشسلش",
+      "image": "https://images.unsplash.com/photo-1580870059868-fb86ed2872bc?w=800&q=80"
+    }
+  ],
+  "banners": [
+    {
+      "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1600&q=80",
+      "link": "/collections/best-sellers",
+      "active": true,
+      "id": "b1"
+    },
+    {
+      "imageUrl": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1600&q=80",
+      "link": "/collections/new-arrivals",
+      "active": true,
+      "id": "b2"
+    }
+  ],
+  "settings": {
+    "marqueeText": "Flash Sale: 50% Off Everything! \nFlash Sale: 50% Off Everything! \nFlash Sale: 50% Off Everything! ",
+    "shippingCost": 50,
+    "desktopColumns": 4,
+    "mobileColumns": 2,
+    "productDisplayMode": "slider",
+    "heroDesktopHeight": "50vh",
+    "heroMobileHeight": "20vh",
+    "paymobApiKey": "534523",
+    "paymobIntegrationId": "523452345",
+    "paymobIframeId": "2352345"
+  },
+  "users": [
+    {
+      "id": "2L7Q5FS6pxXZcR3opQ8YRSirutf2",
+      "name": "Amrkhled Adam",
+      "email": "amrkhledadam@gmail.com",
+      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLba-wZEJiT7u04_j0kerAmvUmxOiKMhTF7qX6Hn39XQ20Rlg=s96-c",
+      "dateJoined": "2026-02-22T05:34:13.765Z",
+      "status": "active"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-1771731295891",
+      "userId": "u_1771731187111",
+      "customerInfo": {
+        "firstName": "Test",
+        "lastName": "User",
+        "phone": "0123456789",
+        "address": "123 Test St",
+        "city": "Cairo"
+      },
+      "items": [
+        {
+          "id": "p1",
+          "name": "ARTMED THE ONE SPLASH 120ML",
+          "price": 250,
+          "quantity": 1,
+          "image": "https://placehold.co/400x400/eeeeee/000000?text=Artmed+The+One"
+        }
+      ],
+      "total": 259,
+      "date": "2026-02-22T03:34:55.891Z",
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-1771732322427",
+      "userId": null,
+      "customerInfo": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "phone": "01234567890",
+        "address": "123 Test St",
+        "city": "Cairo"
+      },
+      "items": [
+        {
+          "id": "p2",
+          "name": "5D WHITE TEETH WHITENNING 1 STRIP",
+          "price": 500,
+          "quantity": 1,
+          "image": "https://placehold.co/400x400/eeeeee/000000?text=Whitestrips"
+        }
+      ],
+      "total": 509,
+      "date": "2026-02-22T03:52:02.427Z",
+      "status": "shipped"
+    },
+    {
+      "id": "ORD-1771734315840",
+      "userId": null,
+      "customerInfo": {
+        "firstName": "Amrkhled",
+        "lastName": "Adam",
+        "phone": "0412342341",
+        "address": "elsalam",
+        "city": "Alexandria"
+      },
+      "items": [
+        {
+          "id": "p2",
+          "name": "5D WHITE TEETH WHITENNING 1 STRIP",
+          "price": 500,
+          "quantity": 1,
+          "image": "https://placehold.co/400x400/eeeeee/000000?text=Whitestrips"
+        }
+      ],
+      "total": 509,
+      "date": "2026-02-22T04:25:15.840Z",
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-1771736799341",
+      "userId": null,
+      "customerInfo": {
+        "firstName": "Amrkhled",
+        "lastName": "Adam",
+        "phone": "0412342341",
+        "address": "elsalam",
+        "city": "Cairo"
+      },
+      "items": [
+        {
+          "id": "p3",
+          "name": "SPA GEL SOCKS",
+          "price": 120,
+          "quantity": 1,
+          "image": "https://placehold.co/400x400/eeeeee/000000?text=Spa+Socks"
+        }
+      ],
+      "total": 129,
+      "date": "2026-02-22T05:06:39.341Z",
+      "status": "shipped"
+    },
+    {
+      "id": "ORD-4UEKB5",
+      "userId": "2L7Q5FS6pxXZcR3opQ8YRSirutf2",
+      "customerInfo": {
+        "firstName": "Amrkhled",
+        "lastName": "Adam",
+        "phone": "0412342341",
+        "address": "elsalam",
+        "city": "Cairo"
+      },
+      "items": [
+        {
+          "id": "p4",
+          "name": "HAIR BRUSH PRO",
+          "price": 85,
+          "quantity": 1,
+          "image": "https://placehold.co/400x400/eeeeee/000000?text=Hair+Brush"
+        }
+      ],
+      "total": 94,
+      "date": "2026-02-22T05:35:13.953Z",
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-GMWUZZ",
+      "userId": "2L7Q5FS6pxXZcR3opQ8YRSirutf2",
+      "customerInfo": {
+        "firstName": "بسيبش",
+        "lastName": "بشس",
+        "phone": "0412342341",
+        "address": "dASDasd",
+        "city": "Cairo"
+      },
+      "items": [
+        {
+          "id": "p1",
+          "name": "ARTMED THE ONE SPLASH 120ML",
+          "price": 250,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80"
+        }
+      ],
+      "total": 259,
+      "date": "2026-02-22T17:12:43.608Z",
+      "status": "shipped"
+    },
+    {
+      "id": "ORD-0M0QWJ",
+      "userId": "2L7Q5FS6pxXZcR3opQ8YRSirutf2",
+      "customerInfo": {
+        "firstName": "Amrkhled",
+        "lastName": "Adam",
+        "phone": "0412342341",
+        "address": "elsalam",
+        "city": "Giza",
+        "payment": "card"
+      },
+      "items": [
+        {
+          "id": "p1",
+          "name": "ARTMED THE ONE SPLASH 120ML",
+          "price": 250,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80"
+        }
+      ],
+      "total": 259,
+      "date": "2026-02-22T17:14:13.411Z",
+      "status": "pending"
+    },
+    {
+      "id": "ORD-DGELEU",
+      "userId": "2L7Q5FS6pxXZcR3opQ8YRSirutf2",
+      "customerInfo": {
+        "firstName": "Amrkhled",
+        "lastName": "Adam",
+        "phone": "0412342341",
+        "address": "elsalam",
+        "city": "Giza"
+      },
+      "items": [
+        {
+          "id": "p1",
+          "name": "ARTMED THE ONE SPLASH 120ML",
+          "price": 250,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80"
+        },
+        {
+          "id": "p5",
+          "name": "FACE CLEANSING FOAM",
+          "price": 140,
+          "quantity": 18,
+          "image": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80"
+        }
+      ],
+      "total": 2820,
+      "date": "2026-02-22T17:26:41.896Z",
+      "status": "pending"
+    },
+    {
+      "id": "ORD-NY4F6U",
+      "userId": "2L7Q5FS6pxXZcR3opQ8YRSirutf2",
+      "customerInfo": {
+        "firstName": "Amrkhled",
+        "lastName": "Adam",
+        "phone": "0412342341",
+        "address": "elsalam",
+        "city": "Giza",
+        "payment": "wallet"
+      },
+      "items": [
+        {
+          "id": "p5",
+          "name": "FACE CLEANSING FOAM",
+          "price": 140,
+          "quantity": 4,
+          "image": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80"
+        }
+      ],
+      "total": 610,
+      "date": "2026-02-22T17:27:16.496Z",
+      "status": "pending"
+    }
+  ]
+}
