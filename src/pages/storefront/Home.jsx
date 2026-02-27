@@ -29,7 +29,7 @@ const Home = () => {
                     scrollbar={{ hide: false, draggable: true }}
                     spaceBetween={15}
                     breakpoints={{
-                        320: { slidesPerView: 2.2, spaceBetween: 10 },
+                        320: { slidesPerView: 1.3, spaceBetween: 15 },
                         768: { slidesPerView: settings?.desktopColumns || 4, spaceBetween: 20 },
                     }}
                     className="product-swiper free-scroll"

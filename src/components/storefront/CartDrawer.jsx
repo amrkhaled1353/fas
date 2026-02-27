@@ -106,35 +106,34 @@ const CartDrawer = () => {
                             );
                         })
                     )}
-                </div>
-
-                {/* You May Also Like Section */}
-                {recommendations.length > 0 && (
-                    <div key={`recs-${isCartOpen}`} className={`cart-drawer-recommendations ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
-                        <div className="recommendation-header">
-                            <h3>You May Also Like</h3>
-                            <div className="recommendation-nav">
-                                <button onClick={prevSlide}><ChevronLeft size={16} /></button>
-                                <button onClick={nextSlide}><ChevronRight size={16} /></button>
-                            </div>
-                        </div>
-
-                        {currentRecommendation && (
-                            <div key={`${currentRecommendation.id}-${slideDirection}`} className={`recommendation-card ${slideDirection}`}>
-                                <img src={currentRecommendation.image} alt={currentRecommendation.name} />
-                                <div className="recommendation-info">
-                                    <h4>{currentRecommendation.name}</h4>
-                                    <div className="cart-item-price-block">
-                                        <span className="cart-current-price">{currentRecommendation.price.toFixed(2)}</span>
-                                    </div>
-                                    <button className="add-recommendation-btn" onClick={() => addToCart(currentRecommendation)}>
-                                        ADD TO CART
-                                    </button>
+                    {/* You May Also Like Section moved INSIDE the scrollable items container */}
+                    {recommendations.length > 0 && (
+                        <div key={`recs-${isCartOpen}`} className={`cart-drawer-recommendations ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
+                            <div className="recommendation-header">
+                                <h3>You May Also Like</h3>
+                                <div className="recommendation-nav">
+                                    <button onClick={prevSlide}><ChevronLeft size={16} /></button>
+                                    <button onClick={nextSlide}><ChevronRight size={16} /></button>
                                 </div>
                             </div>
-                        )}
-                    </div>
-                )}
+
+                            {currentRecommendation && (
+                                <div key={`${currentRecommendation.id}-${slideDirection}`} className={`recommendation-card ${slideDirection}`}>
+                                    <img src={currentRecommendation.image} alt={currentRecommendation.name} />
+                                    <div className="recommendation-info">
+                                        <h4>{currentRecommendation.name}</h4>
+                                        <div className="cart-item-price-block">
+                                            <span className="cart-current-price">{currentRecommendation.price.toFixed(2)}</span>
+                                        </div>
+                                        <button className="add-recommendation-btn" onClick={() => addToCart(currentRecommendation)}>
+                                            ADD TO CART
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
 
                 {/* Footer */}
                 <div key={`footer-${isCartOpen}`} className={`cart-drawer-footer ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>

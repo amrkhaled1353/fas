@@ -974,7 +974,7 @@ button {
     transform: translateY(0);
     padding: 0;
     background: none;
-    bottom: -18px;
+    bottom: -15px;
     /* overlap border */
     align-items: center;
   }
@@ -986,6 +986,10 @@ button {
     border-radius: 30px;
     margin: 0 auto;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-info {
+    padding-top: 28px !important;
   }
 }
 
