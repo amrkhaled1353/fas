@@ -3,10 +3,11 @@ import { useStore } from '../../context/StoreContext';
 import { Link } from 'react-router-dom';
 import ProductCard from '../../components/storefront/ProductCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, Pagination } from 'swiper/modules';
+import { Navigation, Autoplay, Pagination, FreeMode, Scrollbar } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 const Home = () => {
     const { products, categories, banners, settings, loading } = useStore();
@@ -23,16 +24,16 @@ const Home = () => {
         if (isSliderMode) {
             return (
                 <Swiper
-                    modules={[Navigation, Pagination]}
-                    navigation
-                    pagination={{ clickable: true }}
-                    spaceBetween={30}
+                    modules={[FreeMode, Scrollbar]}
+                    freeMode={true}
+                    scrollbar={{ hide: false, draggable: true }}
+                    spaceBetween={15}
                     breakpoints={{
-                        320: { slidesPerView: 2, spaceBetween: 15 },
-                        768: { slidesPerView: settings?.desktopColumns || 4, spaceBetween: 30 },
+                        320: { slidesPerView: 2.2, spaceBetween: 10 },
+                        768: { slidesPerView: settings?.desktopColumns || 4, spaceBetween: 20 },
                     }}
-                    className="product-swiper"
-                    style={{ paddingBottom: '40px' }} // Room for pagination dots
+                    className="product-swiper free-scroll"
+                    style={{ paddingBottom: '30px' }}
                 >
                     {productList.map(product => (
                         <SwiperSlide key={product.id}>

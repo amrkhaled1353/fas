@@ -8,8 +8,6 @@ const CartDrawer = () => {
     const navigate = useNavigate();
 
     // For the 'You May Also Like' slider
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [slideDirection, setSlideDirection] = useState('animate-fade');
 
     // Close drawer on escape
     useEffect(() => {
@@ -27,6 +25,10 @@ const CartDrawer = () => {
     const shipping = subtotalValue > 0 ? (settings?.shippingCost || 0) : 0;
     const total = (subtotalValue + shipping).toFixed(2);
     const totalItemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+    // For the 'You May Also Like' slider
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [slideDirection, setSlideDirection] = useState('animate-fade');
 
     // You May Also Like (Mock items that are not in cart)
     const cartItemIds = cart.map(item => item.id);
@@ -123,7 +125,6 @@ const CartDrawer = () => {
                                 <div className="recommendation-info">
                                     <h4>{currentRecommendation.name}</h4>
                                     <div className="cart-item-price-block">
-                                        <span className="cart-old-price">{(currentRecommendation.price * 1.4).toFixed(2)}</span>
                                         <span className="cart-current-price">{currentRecommendation.price.toFixed(2)}</span>
                                     </div>
                                     <button className="add-recommendation-btn" onClick={() => addToCart(currentRecommendation)}>

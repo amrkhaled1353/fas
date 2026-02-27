@@ -653,6 +653,18 @@ button {
   background-color: rgba(0, 0, 0, 0.02);
 }
 
+/* Swiper Scrollbar Overrides */
+.product-swiper.free-scroll .swiper-scrollbar {
+  background: var(--border-color);
+  bottom: 0px;
+  height: 4px;
+}
+
+.product-swiper.free-scroll .swiper-scrollbar-drag {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
 /* =========================================
    HOME PAGE
    ========================================= */
@@ -2030,6 +2042,7 @@ button {
   width: 100%;
   max-width: 420px;
   height: 100vh;
+  height: 100dvh;
   background-color: var(--surface-light);
   z-index: 1000;
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
@@ -2073,7 +2086,7 @@ button {
 }
 
 .cart-drawer-items {
-  padding: 20px 25px 40px;
+  padding: 20px 25px 60px;
   /* added more bottom padding */
   flex: 1 1 auto;
   overflow-y: auto;
@@ -2086,8 +2099,8 @@ button {
 }
 
 .cart-item-image {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background-color: var(--surface-light);
   border: 1px solid var(--border-color);
   border-radius: 4px;
@@ -2169,7 +2182,8 @@ button {
 
 .cart-drawer-recommendations {
   padding: 0 25px 25px;
-  margin-top: 20px;
+  margin-top: 40px;
+  /* Massive gap */
   flex-shrink: 0;
 }
 
