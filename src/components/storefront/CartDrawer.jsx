@@ -3,8 +3,38 @@ import { useStore } from '../../context/StoreContext';
 import { X, Minus, Plus, ShoppingBag, Truck, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
+const defaultShippingRates = {
+    'Cairo': 50,
+    'Giza': 50,
+    '6th of October': 50,
+    'Alexandria': 60,
+    'Qalyubia': 60,
+    'Sharqia': 60,
+    'Dakahlia': 60,
+    'Port Said': 70,
+    'Suez': 70,
+    'Red Sea': 90,
+    'Luxor': 80,
+    'Aswan': 80,
+    'Other': 80
+};
+
 const CartDrawer = () => {
-    const { cart, updateCartQuantity, removeFromCart, isCartOpen, toggleCart, products, addToCart, settings } = useStore();
+    const {
+        cart,
+        updateCartQuantity,
+        removeFromCart,
+        isCartOpen,
+        toggleCart,
+        products,
+        addToCart,
+        settings,
+        coupons,
+        checkoutNote,
+        setCheckoutNote,
+        activeDiscount,
+        setActiveDiscount
+    } = useStore();
     const navigate = useNavigate();
 
     // For the 'You May Also Like' slider
@@ -22,13 +52,26 @@ const CartDrawer = () => {
 
     const subtotalValue = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const subtotal = subtotalValue.toFixed(2);
-    const shipping = subtotalValue > 0 ? (settings?.shippingCost || 0) : 0;
-    const total = (subtotalValue + shipping).toFixed(2);
+    const shipping = settings?.shippingCost || 0;
+
+    // Apply discount
+    let finalTotalValue = subtotalValue + shipping;
+    if (activeDiscount) {
+        finalTotalValue -= activeDiscount.amount;
+        if (finalTotalValue < 0) finalTotalValue = 0; // Prevent negative total
+    }
+    const total = finalTotalValue.toFixed(2);
+
     const totalItemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
     // For the 'You May Also Like' slider
     const [currentSlide, setCurrentSlide] = useState(0);
     const [slideDirection, setSlideDirection] = useState('animate-fade');
+
+    // Footer Accordion State
+    const [activeTab, setActiveTab] = useState(null); // 'note', 'shipping', 'coupon', or null
+    const [orderNoteLocal, setOrderNoteLocal] = useState(checkoutNote || '');
+    const [couponCode, setCouponCode] = useState('');
 
     // You May Also Like (Mock items that are not in cart)
     const cartItemIds = cart.map(item => item.id);
@@ -43,6 +86,36 @@ const CartDrawer = () => {
     const prevSlide = () => {
         setSlideDirection('animate-slide-in-left');
         setCurrentSlide((prev) => (prev - 1 + recommendations.length) % recommendations.length);
+    };
+
+    const handleApplyCoupon = () => {
+        if (!couponCode.trim()) {
+            setActiveDiscount(null);
+            setActiveTab(null);
+            alert('Coupon code cannot be empty. Discount removed.');
+            return;
+        }
+
+        const validCoupon = coupons.find(c => c.code.toUpperCase() === couponCode.toUpperCase());
+        if (validCoupon) {
+            let discountAmount = 0;
+            if (validCoupon.type === 'percentage') {
+                discountAmount = subtotalValue * (parseFloat(validCoupon.discount) / 100);
+            } else {
+                discountAmount = parseFloat(validCoupon.discount);
+            }
+            setActiveDiscount({ code: validCoupon.code, amount: discountAmount });
+            alert(`Coupon '${validCoupon.code}' applied successfully!`);
+            setActiveTab(null);
+        } else {
+            setActiveDiscount(null); // Clear any previous discount if new code is invalid
+            alert('Invalid coupon code. Please try again.');
+        }
+    };
+
+    const handleSaveNote = () => {
+        setCheckoutNote(orderNoteLocal);
+        setActiveTab(null);
     };
 
     const handleCheckoutClick = () => {
@@ -68,7 +141,6 @@ const CartDrawer = () => {
                     </button>
                 </div>
 
-                {/* Cart Items */}
                 <div key={`items-${isCartOpen}`} className={`cart-drawer-items ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.1s', opacity: 0, animationFillMode: 'forwards' }}>
                     {cart.length === 0 ? (
                         <div className="empty-cart-msg">Your cart is empty.</div>
@@ -106,7 +178,8 @@ const CartDrawer = () => {
                             );
                         })
                     )}
-                    {/* You May Also Like Section moved INSIDE the scrollable items container */}
+
+                    {/* You May Also Like Section */}
                     {recommendations.length > 0 && (
                         <div key={`recs-${isCartOpen}`} className={`cart-drawer-recommendations ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
                             <div className="recommendation-header">
@@ -137,26 +210,112 @@ const CartDrawer = () => {
 
                 {/* Footer */}
                 <div key={`footer-${isCartOpen}`} className={`cart-drawer-footer ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
-                    {/* Icons Bar */}
-                    <div className="cart-drawer-icons">
-                        <button className="cart-icon-btn"><ShoppingBag size={20} /></button>
-                        <button className="cart-icon-btn"><Truck size={20} /></button>
-                        <button className="cart-icon-btn"><Tag size={20} /></button>
+
+                    {/* Icons Bar Minimal */}
+                    <div className="cart-drawer-icons-minimal">
+                        <button className={`cart-icon-btn ${activeTab === 'note' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'note' ? null : 'note')} title="Add Note">
+                            <ShoppingBag size={18} />
+                            <span>Note</span>
+                        </button>
+                        <button className={`cart-icon-btn ${activeTab === 'shipping' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'shipping' ? null : 'shipping')} title="Estimate Shipping">
+                            <Truck size={18} />
+                            <span>Shipping</span>
+                        </button>
+                        <button className={`cart-icon-btn ${activeTab === 'coupon' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'coupon' ? null : 'coupon')} title="Apply Coupon">
+                            <Tag size={18} />
+                            <span>Coupon</span>
+                        </button>
                     </div>
 
-                    <div className="cart-drawer-summary">
-                        <div className="summary-row">
-                            <span>Subtotal:</span>
-                            <span className="summary-value">{subtotal} EGP</span>
+                    {/* Accordions */}
+                    {activeTab === 'note' && (
+                        <div className="cart-accordion-content">
+                            <div className="accordion-header">
+                                <ShoppingBag size={18} />
+                                <h4>Order Special Instructions</h4>
+                            </div>
+                            <textarea
+                                value={orderNoteLocal}
+                                onChange={(e) => setOrderNoteLocal(e.target.value)}
+                                placeholder="Order special instructions"
+                            />
+                            <div className="accordion-actions">
+                                <button className="accordion-save-btn" onClick={handleSaveNote}>SAVE</button>
+                                <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
+                            </div>
                         </div>
-                        <div className="summary-row total-row">
-                            <span>Total:</span>
-                            <span className="summary-value">{total} EGP</span>
+                    )}
+
+                    {activeTab === 'shipping' && (
+                        <div className="cart-accordion-content">
+                            <div className="accordion-header">
+                                <Truck size={18} />
+                                <h4>Estimate Shipping Rates</h4>
+                            </div>
+
+                            <label>Country/Region</label>
+                            <select defaultValue="Egypt">
+                                <option value="Egypt">Egypt</option>
+                            </select>
+
+                            <label>State</label>
+                            <select defaultValue="Cairo">
+                                {Object.keys(settings?.shippingRates || defaultShippingRates).map(gov => (
+                                    <option key={gov} value={gov}>{gov}</option>
+                                ))}
+                            </select>
+
+                            <label>ZIP Code</label>
+                            <input type="text" placeholder="Postal code" />
+
+                            <div className="accordion-actions">
+                                <button className="accordion-save-btn" onClick={() => setActiveTab(null)}>CALCULATE SHIPPING</button>
+                                <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <p className="cart-tax-note">Tax included, {settings?.shippingCost || 0} EGP shipping added</p>
+                    {activeTab === 'coupon' && (
+                        <div className="cart-accordion-content">
+                            <div className="accordion-header">
+                                <Tag size={18} />
+                                <h4>Add A Coupon</h4>
+                            </div>
+                            <p className="coupon-subtitle">Coupon code content</p>
+                            <input
+                                type="text"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                            />
+                            <div className="accordion-actions">
+                                <button className="accordion-save-btn" onClick={handleApplyCoupon}>SAVE</button>
+                                <button className="accordion-cancel-btn" onClick={() => { setActiveTab(null); setCouponCode(''); }}>CANCEL</button>
+                            </div>
+                        </div>
+                    )}
 
+                    {/* Summary */}
+                    {!activeTab && (
+                        <>
+                            <div className="cart-drawer-summary">
+                                <div className="summary-row">
+                                    <span>Subtotal:</span>
+                                    <span className="summary-value">{subtotal} EGP</span>
+                                </div>
+                                {activeDiscount && (
+                                    <div className="summary-row" style={{ color: '#e74c3c' }}>
+                                        <span>Discount ({activeDiscount.code}):</span>
+                                        <span className="summary-value">-{activeDiscount.amount.toFixed(2)} EGP</span>
+                                    </div>
+                                )}
+                                <div className="summary-row total-row">
+                                    <span>Total:</span>
+                                    <span className="summary-value">{total} EGP</span>
+                                </div>
+                            </div>
+                            <p className="cart-tax-note">Tax included. {settings?.shippingCost || 0} EGP shipping added</p>
+                        </>
+                    )}
                     <div className="cart-drawer-buttons">
                         <button className="drawer-checkout-btn" onClick={handleCheckoutClick}>CHECKOUT</button>
                         <button className="drawer-viewcart-btn" onClick={handleViewCartClick}>VIEW CART</button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, FolderTree, Home, Settings, ShoppingBag, Users } from 'lucide-react';
+import { LayoutDashboard, Package, FolderTree, Home, Settings, ShoppingBag, Users, Tag } from 'lucide-react';
 
 const AdminLayout = () => {
     const location = useLocation();
@@ -53,6 +53,11 @@ const AdminLayout = () => {
                         <li>
                             <Link to="/admin/categories" className={location.pathname.includes('/admin/categories') ? 'active' : ''}>
                                 <FolderTree size={20} /> Categories
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/admin/coupons" className={location.pathname.includes('/admin/coupons') ? 'active' : ''}>
+                                <Tag size={20} /> Coupons
                             </Link>
                         </li>
                         <li>

@@ -8,10 +8,16 @@ export const StoreProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [banners, setBanners] = useState([]);
-    const [cart, setCart] = useState([]);
+    const [coupons, setCoupons] = useState([]);
+    const [cart, setCart] = useState(() => {
+        const saved = localStorage.getItem('anwar_cart');
+        return saved ? JSON.parse(saved) : [];
+    });
     const [settings, setSettings] = useState({ marqueeText: '', shippingCost: 0 });
     const [loading, setLoading] = useState(true);
     const [isCartOpen, setIsCartOpen] = useState(false); // New state for slide-out cart
+    const [checkoutNote, setCheckoutNote] = useState('');
+    const [activeDiscount, setActiveDiscount] = useState(null); // { code, amount }
     const [wishlist, setWishlist] = useState(() => {
         const saved = localStorage.getItem('anwar_wishlist');
         return saved ? JSON.parse(saved) : [];
@@ -22,11 +28,12 @@ export const StoreProvider = ({ children }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [prodRes, catRes, banRes, setRes] = await Promise.all([
+                const [prodRes, catRes, banRes, setRes, coupRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_FIREBASE_DB_URL}/products.json`),
                     fetch(`${import.meta.env.VITE_FIREBASE_DB_URL}/categories.json`),
                     fetch(`${import.meta.env.VITE_FIREBASE_DB_URL}/banners.json`),
-                    fetch(`${import.meta.env.VITE_FIREBASE_DB_URL}/settings.json`)
+                    fetch(`${import.meta.env.VITE_FIREBASE_DB_URL}/settings.json`),
+                    fetch(`${import.meta.env.VITE_FIREBASE_DB_URL}/coupons.json`)
                 ]);
 
                 if (prodRes.ok) {
@@ -40,6 +47,14 @@ export const StoreProvider = ({ children }) => {
                 if (banRes.ok) {
                     const data = await banRes.json();
                     setBanners(data ? (Array.isArray(data) ? data : Object.values(data)).filter(Boolean) : []);
+                }
+                if (coupRes.ok) {
+                    const data = await coupRes.json();
+                    let couponsArray = [];
+                    if (data) {
+                        couponsArray = Array.isArray(data) ? data : Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    }
+                    setCoupons(couponsArray);
                 }
                 if (setRes.ok) setSettings(await setRes.json() || { marqueeText: '', shippingCost: 0 });
             } catch (error) {
@@ -79,6 +94,11 @@ export const StoreProvider = ({ children }) => {
         setCart([]);
     };
 
+    // --- Cart Persistence ---
+    useEffect(() => {
+        localStorage.setItem('anwar_cart', JSON.stringify(cart));
+    }, [cart]);
+
     // --- Wishlist Logic ---
     useEffect(() => {
         localStorage.setItem('anwar_wishlist', JSON.stringify(wishlist));
@@ -99,6 +119,7 @@ export const StoreProvider = ({ children }) => {
         products,
         categories,
         banners,
+        coupons,
         cart,
         settings,
         addToCart,
@@ -111,7 +132,11 @@ export const StoreProvider = ({ children }) => {
         wishlist,
         toggleWishlist,
         isSearchOpen,
-        setIsSearchOpen
+        setIsSearchOpen,
+        checkoutNote,
+        setCheckoutNote,
+        activeDiscount,
+        setActiveDiscount
     };
 
     return (

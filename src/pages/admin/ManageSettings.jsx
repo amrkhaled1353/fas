@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useAdmin } from '../../context/AdminContext';
-import { Settings, LayoutGrid, MonitorPlay, CreditCard } from 'lucide-react';
+import { Settings, LayoutGrid, MonitorPlay, CreditCard, Plus, Trash2 } from 'lucide-react';
 
 const ManageSettings = () => {
     const { settings } = useStore();
     const { updateSettings } = useAdmin();
     const [activeTab, setActiveTab] = useState('general');
+
+    // New Governorate Form State
+    const [newGovName, setNewGovName] = useState('');
+    const [newGovPrice, setNewGovPrice] = useState('');
     const [formData, setFormData] = useState({
         marqueeText: '',
-        shippingCost: 0,
+        shippingRates: {
+            'Cairo': 50,
+            'Giza': 50,
+            '6th of October': 50,
+            'Alexandria': 60,
+            'Qalyubia': 60,
+            'Sharqia': 60,
+            'Dakahlia': 60,
+            'Port Said': 70,
+            'Suez': 70,
+            'Red Sea': 90,
+            'Luxor': 80,
+            'Aswan': 80,
+            'Other': 80
+        },
         desktopColumns: 4,
         mobileColumns: 2,
         productDisplayMode: 'grid',
@@ -24,7 +42,11 @@ const ManageSettings = () => {
         if (settings) {
             setFormData({
                 marqueeText: settings.marqueeText || '',
-                shippingCost: settings.shippingCost || 0,
+                shippingRates: settings.shippingRates || {
+                    'Cairo': 50, 'Giza': 50, '6th of October': 50, 'Alexandria': 60,
+                    'Qalyubia': 60, 'Sharqia': 60, 'Dakahlia': 60, 'Port Said': 70,
+                    'Suez': 70, 'Red Sea': 90, 'Luxor': 80, 'Aswan': 80, 'Other': 80
+                },
                 desktopColumns: settings.desktopColumns || 4,
                 mobileColumns: settings.mobileColumns || 2,
                 productDisplayMode: settings.productDisplayMode || 'grid',
@@ -37,11 +59,46 @@ const ManageSettings = () => {
         }
     }, [settings]);
 
+    const handleAddGovernorate = () => {
+        if (!newGovName.trim()) return alert("Governorate name cannot be empty.");
+        if (formData.shippingRates[newGovName.trim()]) return alert("This Governorate already exists.");
+
+        setFormData(prev => ({
+            ...prev,
+            shippingRates: {
+                ...prev.shippingRates,
+                [newGovName.trim()]: Number(newGovPrice) || 0
+            }
+        }));
+        setNewGovName('');
+        setNewGovPrice('');
+    };
+
+    const handleRemoveGovernorate = (govToRemove) => {
+        if (govToRemove === 'Other') return alert("Cannot delete the 'Other' fallback rate.");
+
+        const confirmDelete = window.confirm(`Are you sure you want to remove ${govToRemove}?`);
+        if (!confirmDelete) return;
+
+        setFormData(prev => {
+            const newRates = { ...prev.shippingRates };
+            delete newRates[govToRemove];
+            return { ...prev, shippingRates: newRates };
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Ensure values are numbers
+        const cleanShippingRates = {};
+        for (const [gov, cost] of Object.entries(formData.shippingRates)) {
+            cleanShippingRates[gov] = Number(cost) || 0;
+        }
+
         await updateSettings({
             marqueeText: formData.marqueeText,
-            shippingCost: Number(formData.shippingCost),
+            shippingRates: cleanShippingRates,
             desktopColumns: Number(formData.desktopColumns),
             mobileColumns: Number(formData.mobileColumns),
             productDisplayMode: formData.productDisplayMode,
@@ -108,14 +165,72 @@ const ManageSettings = () => {
                         </div>
 
                         <div className="form-group" style={{ marginBottom: '20px' }}>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Shipping Cost (EGP)</label>
-                            <input
-                                type="number"
-                                value={formData.shippingCost}
-                                onChange={e => setFormData({ ...formData, shippingCost: e.target.value })}
-                                style={{ width: '100%', maxWidth: '200px', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-                                min="0"
-                            />
+                            <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold', fontSize: '1.1rem', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
+                                Dynamic Shipping Rates (EGP)
+                                <span style={{ display: 'block', fontSize: '0.85rem', color: '#666', fontWeight: 'normal', marginTop: '5px' }}>Set specific shipping costs for each governorate.</span>
+                            </label>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '15px', marginBottom: '20px' }}>
+                                {Object.keys(formData.shippingRates).map(gov => (
+                                    <div key={gov} style={{ display: 'flex', flexDirection: 'column', gap: '5px', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '6px', border: '1px solid #eaeaea' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <label style={{ fontSize: '0.95rem', color: '#333', fontWeight: '500' }}>{gov}</label>
+                                            {gov !== 'Other' && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveGovernorate(gov)}
+                                                    style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', padding: '2px' }}
+                                                    title="Remove Governorate"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '0.9rem', color: '#666' }}>EGP</span>
+                                            <input
+                                                type="number"
+                                                value={formData.shippingRates[gov]}
+                                                onChange={e => setFormData({
+                                                    ...formData,
+                                                    shippingRates: { ...formData.shippingRates, [gov]: e.target.value }
+                                                })}
+                                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                                min="0"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Add New Governorate Form */}
+                            <div style={{ background: '#f4f6f8', padding: '15px', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                                <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem', color: '#334155' }}>Add New Governorate</h4>
+                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                    <input
+                                        type="text"
+                                        placeholder="Governorate Name (e.g. Minya)"
+                                        value={newGovName}
+                                        onChange={(e) => setNewGovName(e.target.value)}
+                                        style={{ flex: '1', minWidth: '150px', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                    />
+                                    <input
+                                        type="number"
+                                        placeholder="Cost (EGP)"
+                                        value={newGovPrice}
+                                        onChange={(e) => setNewGovPrice(e.target.value)}
+                                        style={{ width: '120px', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                        min="0"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddGovernorate}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--text-main)', color: 'white', padding: '10px 15px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                        <Plus size={16} /> Add
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

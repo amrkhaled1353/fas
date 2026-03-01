@@ -1,23 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 
+const defaultShippingRates = {
+    'Cairo': 50,
+    'Giza': 50,
+    '6th of October': 50,
+    'Alexandria': 60,
+    'Qalyubia': 60,
+    'Sharqia': 60,
+    'Dakahlia': 60,
+    'Port Said': 70,
+    'Suez': 70,
+    'Red Sea': 90,
+    'Luxor': 80,
+    'Aswan': 80,
+    'Other': 80 // Default fallback
+};
+
 const CheckoutPage = () => {
-    const { cart, settings, clearCart } = useStore();
+    const { cart, clearCart, checkoutNote, activeDiscount, setActiveDiscount, setCheckoutNote, coupons, settings } = useStore();
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
+    const [couponInput, setCouponInput] = useState('');
     const [formData, setFormData] = useState({
+        email: currentUser?.email || '',
+        newsletter: true,
+        country: 'Egypt',
         firstName: '',
         lastName: '',
-        phone: '',
         address: '',
-        city: ''
+        city: '',
+        governorate: 'Cairo',
+        postalCode: '',
+        phone: '',
+        saveInfo: false,
+        payment: 'cod'
     });
 
-    const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const shipping = settings?.shippingCost || 0;
+    const activeRates = settings?.shippingRates || defaultShippingRates;
+    const governoratesList = Object.keys(activeRates);
+
+    const [shippingCost, setShippingCost] = useState(activeRates['Cairo'] || 50);
+
+    // Update shipping cost when governorate changes
+    useEffect(() => {
+        const rate = activeRates[formData.governorate] || activeRates['Other'] || 50;
+        setShippingCost(rate);
+    }, [formData.governorate, activeRates]);
+
+    const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+    let finalTotalValue = subtotal + shippingCost;
+    if (activeDiscount) {
+        finalTotalValue -= activeDiscount.amount;
+        if (finalTotalValue < 0) finalTotalValue = 0;
+    }
+
+    const handleApplyCoupon = (e) => {
+        e.preventDefault();
+        if (!couponInput.trim()) {
+            setActiveDiscount(null);
+            alert('Coupon code cannot be empty.');
+            return;
+        }
+
+        const validCoupon = coupons.find(c => c.code.toUpperCase() === couponInput.toUpperCase());
+        if (validCoupon) {
+            let discountAmount = 0;
+            if (validCoupon.type === 'percentage') {
+                discountAmount = subtotal * (parseFloat(validCoupon.discount) / 100);
+            } else {
+                discountAmount = parseFloat(validCoupon.discount);
+            }
+            setActiveDiscount({ code: validCoupon.code, amount: discountAmount });
+            alert(`Coupon '${validCoupon.code}' applied successfully!`);
+            setCouponInput('');
+        } else {
+            setActiveDiscount(null);
+            alert('Invalid coupon code. Please try again.');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +101,11 @@ const CheckoutPage = () => {
                 quantity: item.quantity,
                 image: item.image
             })),
-            total: total + shipping,
+            note: checkoutNote || '',
+            discount: activeDiscount ? { code: activeDiscount.code, amount: activeDiscount.amount } : null,
+            subtotal: subtotal,
+            shipping: shippingCost,
+            total: finalTotalValue,
             date: new Date().toISOString(),
             status: 'pending'
         };
@@ -50,6 +120,8 @@ const CheckoutPage = () => {
             if (response.ok) {
                 alert("Order Placed Successfully!");
                 clearCart();
+                setActiveDiscount(null);
+                setCheckoutNote('');
                 navigate(currentUser ? '/profile/orders' : '/');
             } else {
                 throw new Error("Failed to place order");
@@ -60,113 +132,176 @@ const CheckoutPage = () => {
         setLoading(false);
     };
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setFormData({ ...formData, [e.target.name]: value });
+    };
 
     if (cart.length === 0) {
         return (
-            <div className="checkout-empty container">
-                <h2>Your cart is empty</h2>
-                <Link to="/collections" className="btn-primary">Return to Shop</Link>
+            <div className="checkout-page">
+                <div className="checkout-empty">
+                    <h2>Your cart is empty</h2>
+                    <Link to="/collections" className="place-order-btn" style={{ textDecoration: 'none', display: 'inline-block' }}>Return to Shop</Link>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="checkout-page container">
+        <div className="checkout-page">
             <div className="checkout-layout">
-                {/* Form Section */}
+
+                {/* LEFT COLUMN: FORM */}
                 <div className="checkout-form-section">
-                    <h2>Billing Details</h2>
-                    {!currentUser && (
-                        <div className="checkout-auth-notice">
-                            Have an account? <Link to="/login">Click here to login</Link> for faster checkout and order tracking.
+                    <form onSubmit={handleSubmit} className="checkout-form">
+
+                        {/* Contact Section */}
+                        <div className="checkout-section-header">
+                            <h2 className="form-group-title" style={{ marginTop: 0 }}>Contact</h2>
+                            {!currentUser && <Link to="/login">Sign in</Link>}
                         </div>
-                    )}
-                    <form className="checkout-form" onSubmit={handleSubmit}>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email or mobile phone number"
+                            className="checkout-input"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                        <label className="checkout-checkbox">
+                            <input
+                                type="checkbox"
+                                name="newsletter"
+                                checked={formData.newsletter}
+                                onChange={handleChange}
+                            />
+                            Email me with news and offers
+                        </label>
+
+                        {/* Delivery Section */}
+                        <h2 className="form-group-title">Delivery</h2>
+
+                        <div className="checkout-select-wrapper">
+                            <select name="country" className="checkout-input" value={formData.country} onChange={handleChange} required>
+                                <option value="Egypt">Egypt</option>
+                            </select>
+                        </div>
+
                         <div className="form-row">
-                            <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
-                            <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
+                            <input type="text" name="firstName" placeholder="First name" className="checkout-input" value={formData.firstName} onChange={handleChange} required />
+                            <input type="text" name="lastName" placeholder="Last name" className="checkout-input" value={formData.lastName} onChange={handleChange} required />
                         </div>
-                        <input type="tel" name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} required />
-                        <input type="text" name="address" placeholder="Street Address" value={formData.address} onChange={handleChange} required />
-                        <select name="city" value={formData.city} onChange={handleChange} required>
-                            <option value="">Select City / Governorate</option>
-                            <option value="Cairo">Cairo</option>
-                            <option value="Giza">Giza</option>
-                            <option value="Alexandria">Alexandria</option>
-                        </select>
-                        <div className="payment-method-section">
-                            <h3>Payment Method</h3>
-                            <div className="payment-options-grid">
-                                <label className={`payment-option-card ${formData.payment === 'cod' ? 'selected' : ''}`}>
-                                    <input type="radio" name="payment" value="cod" checked={formData.payment === 'cod' || !formData.payment} onChange={handleChange} />
-                                    <div className="payment-card-content">
-                                        <div className="payment-icon">💵</div>
-                                        <div className="payment-details">
-                                            <span className="payment-title">Cash on Delivery</span>
-                                            <span className="payment-desc">Pay when your order arrives</span>
-                                        </div>
-                                    </div>
-                                </label>
 
-                                <label className={`payment-option-card ${formData.payment === 'card' ? 'selected' : ''}`}>
-                                    <input type="radio" name="payment" value="card" checked={formData.payment === 'card'} onChange={handleChange} />
-                                    <div className="payment-card-content">
-                                        <div className="payment-icon">💳</div>
-                                        <div className="payment-details">
-                                            <span className="payment-title">Credit / Debit Card</span>
-                                            <span className="payment-desc">Powered securely by Paymob</span>
-                                        </div>
-                                    </div>
-                                </label>
+                        <input type="text" name="address" placeholder="Address" className="checkout-input" value={formData.address} onChange={handleChange} required />
 
-                                <label className={`payment-option-card ${formData.payment === 'wallet' ? 'selected' : ''}`}>
-                                    <input type="radio" name="payment" value="wallet" checked={formData.payment === 'wallet'} onChange={handleChange} />
-                                    <div className="payment-card-content">
-                                        <div className="payment-icon">📱</div>
-                                        <div className="payment-details">
-                                            <span className="payment-title">Mobile Wallets</span>
-                                            <span className="payment-desc">Vodafone Cash, Orange, etc.</span>
-                                        </div>
-                                    </div>
-                                </label>
+                        <div className="form-row-3">
+                            <input type="text" name="city" placeholder="City" className="checkout-input" value={formData.city} onChange={handleChange} required />
+
+                            <div className="checkout-select-wrapper">
+                                <select name="governorate" className="checkout-input" value={formData.governorate} onChange={handleChange} required>
+                                    <option value="" disabled>Governorate</option>
+                                    {governoratesList.map(gov => (
+                                        <option key={gov} value={gov}>{gov}</option>
+                                    ))}
+                                </select>
                             </div>
+
+                            <input type="text" name="postalCode" placeholder="Postal code (optional)" className="checkout-input" value={formData.postalCode} onChange={handleChange} />
                         </div>
-                        <button type="submit" className="block-btn place-order-btn" disabled={loading}>
-                            {loading ? 'Processing...' : 'Place Order'}
+
+                        <input type="tel" name="phone" placeholder="Phone" className="checkout-input" value={formData.phone} onChange={handleChange} required />
+
+                        <label className="checkout-checkbox" style={{ marginTop: '10px' }}>
+                            <input
+                                type="checkbox"
+                                name="saveInfo"
+                                checked={formData.saveInfo}
+                                onChange={handleChange}
+                            />
+                            Save this information for next time
+                        </label>
+
+
+                        {/* Payment Method Section */}
+                        <div className="payment-method-section">
+                            <label className={`payment-option-card ${formData.payment === 'cod' ? 'selected' : ''}`}>
+                                <input type="radio" name="payment" value="cod" checked={formData.payment === 'cod'} onChange={handleChange} />
+                                <div className="payment-details">
+                                    <span className="payment-title">Cash on Delivery (COD)</span>
+                                </div>
+                            </label>
+
+                            <label className={`payment-option-card ${formData.payment === 'card' ? 'selected' : ''}`}>
+                                <input type="radio" name="payment" value="card" checked={formData.payment === 'card'} onChange={handleChange} />
+                                <div className="payment-details">
+                                    <span className="payment-title">Credit card / Debit card</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <button type="submit" className="place-order-btn" disabled={loading}>
+                            {loading ? 'Processing...' : 'Complete order'}
                         </button>
                     </form>
                 </div>
 
-                {/* Order Summary Section */}
+                {/* RIGHT COLUMN: SUMMARY */}
                 <div className="checkout-summary-section">
-                    <h3>Your Order</h3>
                     <div className="checkout-items">
                         {cart.map(item => (
                             <div key={item.id} className="checkout-item">
+                                <div className="item-thumbnail">
+                                    <img src={item.image} alt={item.name} />
+                                    <span className="item-qty-badge">{item.quantity}</span>
+                                </div>
                                 <div className="item-info">
-                                    <span className="item-qty">{item.quantity}x</span>
                                     <span className="item-name">{item.name}</span>
                                 </div>
-                                <span className="item-price">{item.price * item.quantity} EGP</span>
+                                <span className="item-price">E£{(item.price * item.quantity).toFixed(2)}</span>
                             </div>
                         ))}
                     </div>
+
+                    <div className="checkout-discount">
+                        <input
+                            type="text"
+                            placeholder="Discount code or gift card"
+                            value={couponInput}
+                            onChange={(e) => setCouponInput(e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleApplyCoupon}
+                            className={couponInput.length > 0 ? 'active' : ''}
+                        >
+                            Apply
+                        </button>
+                    </div>
+
                     <div className="checkout-totals">
-                        <div className="totals-row">
-                            <span>Subtotal</span>
-                            <span>{total} EGP</span>
+                        <div className="summary-row">
+                            <span>Subtotal · {cart.reduce((a, b) => a + b.quantity, 0)} items</span>
+                            <span>E£{subtotal.toFixed(2)}</span>
                         </div>
-                        <div className="totals-row">
+                        <div className="summary-row">
                             <span>Shipping</span>
-                            <span>{shipping} EGP</span>
+                            <span>E£{shippingCost.toFixed(2)}</span>
                         </div>
-                        <div className="totals-row grand-total">
+                        {activeDiscount && (
+                            <div className="summary-row" style={{ color: '#e74c3c' }}>
+                                <span>Discount ({activeDiscount.code})</span>
+                                <span>-E£{activeDiscount.amount.toFixed(2)}</span>
+                            </div>
+                        )}
+                        <div className="summary-row total-row">
                             <span>Total</span>
-                            <span>{total + shipping} EGP</span>
+                            <span><span className="total-currency">EGP</span> E£{finalTotalValue.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

@@ -29,6 +29,9 @@ export const AdminProvider = ({ children }) => {
     const updateBanner = (id, data) => apiCall(`/banners/${id}`, 'PUT', data);
     const deleteBanner = (id) => apiCall(`/banners/${id}`, 'DELETE');
 
+    const createCoupon = (data) => apiCall('/coupons', 'POST', data);
+    const deleteCoupon = (id) => apiCall(`/coupons/${id}`, 'DELETE');
+
     const updateSettings = (data) => apiCall(`/settings`, 'PUT', data);
 
     const value = {
@@ -41,6 +44,8 @@ export const AdminProvider = ({ children }) => {
         createBanner,
         updateBanner,
         deleteBanner,
+        createCoupon,
+        deleteCoupon,
         updateSettings
     };
 

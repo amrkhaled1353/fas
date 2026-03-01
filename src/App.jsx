@@ -34,6 +34,7 @@ import ManageCategories from './pages/admin/ManageCategories';
 import ManageBanners from './pages/admin/ManageBanners';
 import ManageSettings from './pages/admin/ManageSettings';
 import ManageOrders from './pages/admin/ManageOrders';
+import ManageCoupons from './pages/admin/ManageCoupons';
 import ManageUsers from './pages/admin/ManageUsers';
 
 // Layouts
@@ -77,6 +78,7 @@ const AnimatedRoutes = () => {
           <Route path="categories" element={<PageTransition><ManageCategories /></PageTransition>} />
           <Route path="banners" element={<PageTransition><ManageBanners /></PageTransition>} />
           <Route path="orders" element={<PageTransition><ManageOrders /></PageTransition>} />
+          <Route path="coupons" element={<PageTransition><ManageCoupons /></PageTransition>} />
           <Route path="users" element={<PageTransition><ManageUsers /></PageTransition>} />
           <Route path="settings" element={<PageTransition><ManageSettings /></PageTransition>} />
         </Route>
