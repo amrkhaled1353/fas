@@ -20,7 +20,7 @@ const defaultShippingRates = {
 };
 
 const CheckoutPage = () => {
-    const { cart, clearCart, checkoutNote, activeDiscount, setActiveDiscount, setCheckoutNote, coupons, settings } = useStore();
+    const { cart, clearCart, checkoutNote, activeDiscount, setActiveDiscount, setCheckoutNote, coupons, settings, selectedGovernorate, setSelectedGovernorate } = useStore();
     const { currentUser } = useAuth();
     const navigate = useNavigate();
 
@@ -34,7 +34,7 @@ const CheckoutPage = () => {
         lastName: '',
         address: '',
         city: '',
-        governorate: 'Cairo',
+        governorate: selectedGovernorate || 'Cairo',
         postalCode: '',
         phone: '',
         saveInfo: false,
@@ -135,6 +135,9 @@ const CheckoutPage = () => {
     const handleChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value });
+        if (e.target.name === 'governorate') {
+            setSelectedGovernorate(value);
+        }
     };
 
     if (cart.length === 0) {
@@ -259,7 +262,7 @@ const CheckoutPage = () => {
                                 <div className="item-info">
                                     <span className="item-name">{item.name}</span>
                                 </div>
-                                <span className="item-price">E£{(item.price * item.quantity).toFixed(2)}</span>
+                                <span className="item-price">{(item.price * item.quantity).toFixed(2)} EGP</span>
                             </div>
                         ))}
                     </div>
@@ -283,21 +286,21 @@ const CheckoutPage = () => {
                     <div className="checkout-totals">
                         <div className="summary-row">
                             <span>Subtotal · {cart.reduce((a, b) => a + b.quantity, 0)} items</span>
-                            <span>E£{subtotal.toFixed(2)}</span>
+                            <span>{subtotal.toFixed(2)} EGP</span>
                         </div>
                         <div className="summary-row">
                             <span>Shipping</span>
-                            <span>E£{shippingCost.toFixed(2)}</span>
+                            <span>{shippingCost.toFixed(2)} EGP</span>
                         </div>
                         {activeDiscount && (
                             <div className="summary-row" style={{ color: '#e74c3c' }}>
                                 <span>Discount ({activeDiscount.code})</span>
-                                <span>-E£{activeDiscount.amount.toFixed(2)}</span>
+                                <span>-{activeDiscount.amount.toFixed(2)} EGP</span>
                             </div>
                         )}
                         <div className="summary-row total-row">
                             <span>Total</span>
-                            <span><span className="total-currency">EGP</span> E£{finalTotalValue.toFixed(2)}</span>
+                            <span><span className="total-currency">EGP</span> {finalTotalValue.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>

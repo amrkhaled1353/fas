@@ -33,7 +33,9 @@ const CartDrawer = () => {
         checkoutNote,
         setCheckoutNote,
         activeDiscount,
-        setActiveDiscount
+        setActiveDiscount,
+        selectedGovernorate,
+        setSelectedGovernorate
     } = useStore();
     const navigate = useNavigate();
 
@@ -52,7 +54,11 @@ const CartDrawer = () => {
 
     const subtotalValue = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const subtotal = subtotalValue.toFixed(2);
-    const shipping = settings?.shippingCost || 0;
+
+    // Calculate shipping based on selected governorate, else fallback to default shipping cost
+    const activeRates = settings?.shippingRates || defaultShippingRates;
+    const govToUse = selectedGovernorate || 'Cairo';
+    let shipping = activeRates[govToUse] !== undefined ? Number(activeRates[govToUse]) : (activeRates['Other'] || 50);
 
     // Apply discount
     let finalTotalValue = subtotalValue + shipping;
@@ -72,6 +78,7 @@ const CartDrawer = () => {
     const [activeTab, setActiveTab] = useState(null); // 'note', 'shipping', 'coupon', or null
     const [orderNoteLocal, setOrderNoteLocal] = useState(checkoutNote || '');
     const [couponCode, setCouponCode] = useState('');
+    const [localGov, setLocalGov] = useState(selectedGovernorate || 'Cairo');
 
     // You May Also Like (Mock items that are not in cart)
     const cartItemIds = cart.map(item => item.id);
@@ -115,6 +122,11 @@ const CartDrawer = () => {
 
     const handleSaveNote = () => {
         setCheckoutNote(orderNoteLocal);
+        setActiveTab(null);
+    };
+
+    const handleCalculateShipping = () => {
+        setSelectedGovernorate(localGov);
         setActiveTab(null);
     };
 
@@ -245,7 +257,7 @@ const CartDrawer = () => {
                                 <span className="summary-value">{total} EGP</span>
                             </div>
                         </div>
-                        <p className="cart-tax-note">Tax included. {settings?.shippingCost || 0} EGP shipping added</p>
+                        <p className="cart-tax-note">Tax included. {shipping} EGP shipping added</p>
                         <div className="cart-drawer-buttons">
                             <button className="drawer-checkout-btn" onClick={handleCheckoutClick}>CHECKOUT</button>
                             <button className="drawer-viewcart-btn" onClick={handleViewCartClick}>VIEW CART</button>
@@ -289,7 +301,7 @@ const CartDrawer = () => {
                                 </select>
 
                                 <label>State</label>
-                                <select defaultValue="Cairo">
+                                <select value={localGov} onChange={(e) => setLocalGov(e.target.value)}>
                                     {Object.keys(settings?.shippingRates || defaultShippingRates).map(gov => (
                                         <option key={gov} value={gov}>{gov}</option>
                                     ))}
@@ -299,7 +311,7 @@ const CartDrawer = () => {
                                 <input type="text" placeholder="Postal code" />
 
                                 <div className="accordion-actions">
-                                    <button className="accordion-save-btn" onClick={() => setActiveTab(null)}>CALCULATE SHIPPING</button>
+                                    <button className="accordion-save-btn" onClick={handleCalculateShipping}>CALCULATE SHIPPING</button>
                                     <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
                                 </div>
                             </div>

@@ -23,6 +23,7 @@ export const StoreProvider = ({ children }) => {
         return saved ? JSON.parse(saved) : [];
     });
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [selectedGovernorate, setSelectedGovernorate] = useState('');
 
     // Fetch data from json-server
     useEffect(() => {
@@ -136,7 +137,9 @@ export const StoreProvider = ({ children }) => {
         checkoutNote,
         setCheckoutNote,
         activeDiscount,
-        setActiveDiscount
+        setActiveDiscount,
+        selectedGovernorate,
+        setSelectedGovernorate
     };
 
     return (
