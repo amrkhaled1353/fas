@@ -562,7 +562,8 @@ button {
     padding: 10px 0 15px;
     /* Extra padding at bottom for safe area / indicator */
     box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
-    z-index: 2000;
+    z-index: 1000;
+    /* Lower than cart drawer and overlay */
     border-top: 1px solid var(--glass-border);
   }
 
@@ -2154,15 +2155,16 @@ button {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 2100;
+  height: 100dvh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 2000;
+  /* Higher than navbar and bottom nav */
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .cart-overlay.open {
@@ -2180,7 +2182,8 @@ button {
   height: 100vh;
   height: 100dvh;
   background-color: var(--surface-light);
-  z-index: 1000;
+  z-index: 2001;
+  /* Higher than fixed navbars */
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -2395,8 +2398,7 @@ button {
 
 @media (max-width: 768px) {
   .cart-drawer-footer {
-    padding-bottom: 100px;
-    /* Accounts for Mobile Bottom Nav */
+    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 }
 
@@ -2444,26 +2446,52 @@ button {
   color: var(--primary-color);
 }
 
-/* Accordion Content */
+/* Feature Popup Modal */
+.feature-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Center vertically */
+  align-items: center;
+  /* Center horizontally */
+  padding: 20px;
+}
+
+.feature-popup-content {
+  background-color: var(--surface-light);
+  width: 100%;
+  border-radius: 20px;
+  /* Rounded all around */
+  padding: 30px 25px max(30px, env(safe-area-inset-bottom));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  max-width: 400px;
+  /* Reduced max-width for popup feel */
+}
+
 .cart-accordion-content {
-  background-color: var(--background-light);
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 15px;
-  animation: fadeIn 0.3s ease;
+  width: 100%;
 }
 
 .accordion-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .accordion-header h4 {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -2471,47 +2499,47 @@ button {
 .cart-accordion-content input[type="text"],
 .cart-accordion-content select {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  background-color: var(--surface-light);
+  background-color: var(--background-light);
   color: var(--text-main);
-  font-size: 0.9rem;
-  margin-bottom: 10px;
+  font-size: 1rem;
+  margin-bottom: 15px;
   font-family: inherit;
 }
 
 .cart-accordion-content textarea {
-  min-height: 80px;
+  min-height: 100px;
   resize: vertical;
 }
 
 .cart-accordion-content label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .coupon-subtitle {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .accordion-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 15px;
+  margin-top: 20px;
 }
 
 .accordion-save-btn,
 .accordion-cancel-btn {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
   text-align: center;
   transition: var(--transition);
@@ -2532,19 +2560,25 @@ button {
 .summary-row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 500;
   margin-bottom: 10px;
+  color: #f8f9fa !important;
+  /* Force bright color against dark background */
 }
 
 .summary-row.total-row {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
   margin-top: 15px;
+  color: #f8f9fa !important;
+  /* Force bright color against dark background */
 }
 
 .cart-tax-note {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: #adb5bd !important;
+  /* Force lighter muted color */
   margin-bottom: 20px;
 }
 
@@ -4280,4 +4314,65 @@ html {
   * {
     cursor: none !important;
   }
+}
+
+/* =========================================
+   CHECKOUT PAGE DARK MODE OVERRIDES
+   ========================================= */
+
+/* Dark mode overrides for checkout components */
+[data-theme="dark"] .checkout-page {
+  background-color: var(--background-main) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .checkout-layout {
+  background-color: var(--background-main) !important;
+}
+
+[data-theme="dark"] .checkout-form-section,
+[data-theme="dark"] .checkout-summary-section {
+  background-color: var(--background-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .checkout-summary-section {
+  background-color: var(--surface-light) !important;
+}
+
+[data-theme="dark"] .checkout-input,
+[data-theme="dark"] .checkout-select-wrapper select,
+[data-theme="dark"] .checkout-discount input {
+  background-color: var(--surface-light) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .checkout-input::placeholder,
+[data-theme="dark"] .checkout-discount input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .form-group-title,
+[data-theme="dark"] .checkout-checkbox,
+[data-theme="dark"] .payment-title,
+[data-theme="dark"] .item-name,
+[data-theme="dark"] .item-price,
+[data-theme="dark"] .summary-row span,
+[data-theme="dark"] .total-row span {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .payment-option-card {
+  background-color: var(--background-light) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .payment-option-card.selected {
+  background-color: var(--surface-light) !important;
+  border-color: var(--primary-color) !important;
+}
+
+[data-theme="dark"] .checkout-section-header a {
+  color: var(--primary-color) !important;
 }

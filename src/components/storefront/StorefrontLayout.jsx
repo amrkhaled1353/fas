@@ -122,23 +122,6 @@ const StorefrontLayout = () => {
                     </div>
                 </div>
 
-                {/* Mobile Navigation Overlay */}
-                <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={closeMenu}>
-                    <div className="mobile-nav-content" onClick={e => e.stopPropagation()}>
-                        <div className="mobile-nav-header">
-                            <h3>Menu</h3>
-                            <button className="icon-btn" onClick={closeMenu}><X size={24} /></button>
-                        </div>
-                        <nav className="mobile-nav-links">
-                            <ul>
-                                <li><Link to="/collections" onClick={closeMenu}>All Products</Link></li>
-                                <li><Link to="/collections/bestsellers" onClick={closeMenu}>Best Sellers</Link></li>
-                                <li><Link to="/collections/new" onClick={closeMenu}>New Arrivals</Link></li>
-                                <li><Link to="/collections/lenses" onClick={closeMenu}>Lenses</Link></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
             </header>
 
             {/* Main Content */}
@@ -146,9 +129,27 @@ const StorefrontLayout = () => {
                 <Outlet />
             </main>
 
-            {/* Search Overlay & Cart Drawer */}
+            {/* Look & Feel Overlays */}
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <CartDrawer />
+
+            {/* Mobile Navigation Overlay */}
+            <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={closeMenu}>
+                <div className="mobile-nav-content" onClick={e => e.stopPropagation()}>
+                    <div className="mobile-nav-header">
+                        <h3>Menu</h3>
+                        <button className="icon-btn" onClick={closeMenu}><X size={24} /></button>
+                    </div>
+                    <nav className="mobile-nav-links">
+                        <ul>
+                            <li><Link to="/collections" onClick={closeMenu}>All Products</Link></li>
+                            <li><Link to="/collections/bestsellers" onClick={closeMenu}>Best Sellers</Link></li>
+                            <li><Link to="/collections/new" onClick={closeMenu}>New Arrivals</Link></li>
+                            <li><Link to="/collections/lenses" onClick={closeMenu}>Lenses</Link></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
 
             {/* Footer */}
             <footer className="main-footer">

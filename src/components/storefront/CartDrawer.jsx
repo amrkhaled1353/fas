@@ -129,200 +129,204 @@ const CartDrawer = () => {
     };
 
     return (
-        <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={() => toggleCart(false)}>
-            <div className="cart-drawer" onClick={(e) => e.stopPropagation()}>
-                <div className="cart-drawer-header">
-                    <div>
-                        <h2>Shopping Cart</h2>
-                        <p className="item-count">{totalItemCount} item{totalItemCount !== 1 ? 's' : ''}</p>
+        <>
+            <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={() => toggleCart(false)}>
+                <div className="cart-drawer" onClick={(e) => e.stopPropagation()}>
+                    <div className="cart-drawer-header">
+                        <div>
+                            <h2>Shopping Cart</h2>
+                            <p className="item-count">{totalItemCount} item{totalItemCount !== 1 ? 's' : ''}</p>
+                        </div>
+                        <button className="close-cart-btn" onClick={() => toggleCart(false)}>
+                            <X size={24} />
+                        </button>
                     </div>
-                    <button className="close-cart-btn" onClick={() => toggleCart(false)}>
-                        <X size={24} />
-                    </button>
-                </div>
 
-                <div key={`items-${isCartOpen}`} className={`cart-drawer-items ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.1s', opacity: 0, animationFillMode: 'forwards' }}>
-                    {cart.length === 0 ? (
-                        <div className="empty-cart-msg">Your cart is empty.</div>
-                    ) : (
-                        cart.map((item) => {
-                            const oldPrice = (item.price * 1.4).toFixed(2); // Mock original price
-                            return (
-                                <div key={item.id} className="cart-drawer-item">
-                                    <div className="cart-item-image">
-                                        <img src={item.image} alt={item.name} />
-                                    </div>
-                                    <div className="cart-item-details">
-                                        <h4>{item.name}</h4>
-                                        <div className="cart-item-price-block">
-                                            <span className="cart-old-price">{oldPrice}</span>
-                                            <span className="cart-current-price">{item.price.toFixed(2)}</span>
+                    <div key={`items-${isCartOpen}`} className={`cart-drawer-items ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.1s', opacity: 0, animationFillMode: 'forwards' }}>
+                        {cart.length === 0 ? (
+                            <div className="empty-cart-msg">Your cart is empty.</div>
+                        ) : (
+                            cart.map((item) => {
+                                const oldPrice = (item.price * 1.4).toFixed(2); // Mock original price
+                                return (
+                                    <div key={item.id} className="cart-drawer-item">
+                                        <div className="cart-item-image">
+                                            <img src={item.image} alt={item.name} />
                                         </div>
+                                        <div className="cart-item-details">
+                                            <h4>{item.name}</h4>
+                                            <div className="cart-item-price-block">
+                                                <span className="cart-old-price">{oldPrice}</span>
+                                                <span className="cart-current-price">{item.price.toFixed(2)}</span>
+                                            </div>
 
-                                        <div className="cart-item-actions">
-                                            <div className="cart-quantity-controls">
-                                                <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)}>
-                                                    <Minus size={14} />
-                                                </button>
-                                                <span>{item.quantity}</span>
-                                                <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)}>
-                                                    <Plus size={14} />
+                                            <div className="cart-item-actions">
+                                                <div className="cart-quantity-controls">
+                                                    <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)}>
+                                                        <Minus size={14} />
+                                                    </button>
+                                                    <span>{item.quantity}</span>
+                                                    <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)}>
+                                                        <Plus size={14} />
+                                                    </button>
+                                                </div>
+                                                <button className="cart-item-remove" onClick={() => removeFromCart(item.id)}>
+                                                    <X size={20} />
                                                 </button>
                                             </div>
-                                            <button className="cart-item-remove" onClick={() => removeFromCart(item.id)}>
-                                                <X size={20} />
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+
+                        {/* You May Also Like Section */}
+                        {recommendations.length > 0 && (
+                            <div key={`recs-${isCartOpen}`} className={`cart-drawer-recommendations ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
+                                <div className="recommendation-header">
+                                    <h3>You May Also Like</h3>
+                                    <div className="recommendation-nav">
+                                        <button onClick={prevSlide}><ChevronLeft size={16} /></button>
+                                        <button onClick={nextSlide}><ChevronRight size={16} /></button>
+                                    </div>
+                                </div>
+
+                                {currentRecommendation && (
+                                    <div key={`${currentRecommendation.id}-${slideDirection}`} className={`recommendation-card ${slideDirection}`}>
+                                        <img src={currentRecommendation.image} alt={currentRecommendation.name} />
+                                        <div className="recommendation-info">
+                                            <h4>{currentRecommendation.name}</h4>
+                                            <div className="cart-item-price-block">
+                                                <span className="cart-current-price">{currentRecommendation.price.toFixed(2)}</span>
+                                            </div>
+                                            <button className="add-recommendation-btn" onClick={() => addToCart(currentRecommendation)}>
+                                                ADD TO CART
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })
-                    )}
-
-                    {/* You May Also Like Section */}
-                    {recommendations.length > 0 && (
-                        <div key={`recs-${isCartOpen}`} className={`cart-drawer-recommendations ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
-                            <div className="recommendation-header">
-                                <h3>You May Also Like</h3>
-                                <div className="recommendation-nav">
-                                    <button onClick={prevSlide}><ChevronLeft size={16} /></button>
-                                    <button onClick={nextSlide}><ChevronRight size={16} /></button>
-                                </div>
+                                )}
                             </div>
-
-                            {currentRecommendation && (
-                                <div key={`${currentRecommendation.id}-${slideDirection}`} className={`recommendation-card ${slideDirection}`}>
-                                    <img src={currentRecommendation.image} alt={currentRecommendation.name} />
-                                    <div className="recommendation-info">
-                                        <h4>{currentRecommendation.name}</h4>
-                                        <div className="cart-item-price-block">
-                                            <span className="cart-current-price">{currentRecommendation.price.toFixed(2)}</span>
-                                        </div>
-                                        <button className="add-recommendation-btn" onClick={() => addToCart(currentRecommendation)}>
-                                            ADD TO CART
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                {/* Footer */}
-                <div key={`footer-${isCartOpen}`} className={`cart-drawer-footer ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
-
-                    {/* Icons Bar Minimal */}
-                    <div className="cart-drawer-icons-minimal">
-                        <button className={`cart-icon-btn ${activeTab === 'note' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'note' ? null : 'note')} title="Add Note">
-                            <ShoppingBag size={18} />
-                            <span>Note</span>
-                        </button>
-                        <button className={`cart-icon-btn ${activeTab === 'shipping' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'shipping' ? null : 'shipping')} title="Estimate Shipping">
-                            <Truck size={18} />
-                            <span>Shipping</span>
-                        </button>
-                        <button className={`cart-icon-btn ${activeTab === 'coupon' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'coupon' ? null : 'coupon')} title="Apply Coupon">
-                            <Tag size={18} />
-                            <span>Coupon</span>
-                        </button>
+                        )}
                     </div>
 
-                    {/* Accordions */}
-                    {activeTab === 'note' && (
-                        <div className="cart-accordion-content">
-                            <div className="accordion-header">
+                    {/* Footer */}
+                    <div key={`footer-${isCartOpen}`} className={`cart-drawer-footer ${isCartOpen ? 'animate-fade-in-up' : ''}`} style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
+
+                        {/* Icons Bar Minimal */}
+                        <div className="cart-drawer-icons-minimal">
+                            <button className={`cart-icon-btn ${activeTab === 'note' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'note' ? null : 'note')} title="Add Note">
                                 <ShoppingBag size={18} />
-                                <h4>Order Special Instructions</h4>
-                            </div>
-                            <textarea
-                                value={orderNoteLocal}
-                                onChange={(e) => setOrderNoteLocal(e.target.value)}
-                                placeholder="Order special instructions"
-                            />
-                            <div className="accordion-actions">
-                                <button className="accordion-save-btn" onClick={handleSaveNote}>SAVE</button>
-                                <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === 'shipping' && (
-                        <div className="cart-accordion-content">
-                            <div className="accordion-header">
+                                <span>Note</span>
+                            </button>
+                            <button className={`cart-icon-btn ${activeTab === 'shipping' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'shipping' ? null : 'shipping')} title="Estimate Shipping">
                                 <Truck size={18} />
-                                <h4>Estimate Shipping Rates</h4>
-                            </div>
-
-                            <label>Country/Region</label>
-                            <select defaultValue="Egypt">
-                                <option value="Egypt">Egypt</option>
-                            </select>
-
-                            <label>State</label>
-                            <select defaultValue="Cairo">
-                                {Object.keys(settings?.shippingRates || defaultShippingRates).map(gov => (
-                                    <option key={gov} value={gov}>{gov}</option>
-                                ))}
-                            </select>
-
-                            <label>ZIP Code</label>
-                            <input type="text" placeholder="Postal code" />
-
-                            <div className="accordion-actions">
-                                <button className="accordion-save-btn" onClick={() => setActiveTab(null)}>CALCULATE SHIPPING</button>
-                                <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === 'coupon' && (
-                        <div className="cart-accordion-content">
-                            <div className="accordion-header">
+                                <span>Shipping</span>
+                            </button>
+                            <button className={`cart-icon-btn ${activeTab === 'coupon' ? 'active' : ''}`} onClick={() => setActiveTab(activeTab === 'coupon' ? null : 'coupon')} title="Apply Coupon">
                                 <Tag size={18} />
-                                <h4>Add A Coupon</h4>
+                                <span>Coupon</span>
+                            </button>
+                        </div>
+
+                        {/* Summary */}
+                        <div className="cart-drawer-summary">
+                            <div className="summary-row">
+                                <span>Subtotal:</span>
+                                <span className="summary-value">{subtotal} EGP</span>
                             </div>
-                            <p className="coupon-subtitle">Coupon code content</p>
-                            <input
-                                type="text"
-                                value={couponCode}
-                                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                            />
-                            <div className="accordion-actions">
-                                <button className="accordion-save-btn" onClick={handleApplyCoupon}>SAVE</button>
-                                <button className="accordion-cancel-btn" onClick={() => { setActiveTab(null); setCouponCode(''); }}>CANCEL</button>
+                            {activeDiscount && (
+                                <div className="summary-row" style={{ color: '#e74c3c' }}>
+                                    <span>Discount ({activeDiscount.code}):</span>
+                                    <span className="summary-value">-{activeDiscount.amount.toFixed(2)} EGP</span>
+                                </div>
+                            )}
+                            <div className="summary-row total-row">
+                                <span>Total:</span>
+                                <span className="summary-value">{total} EGP</span>
                             </div>
                         </div>
-                    )}
-
-                    {/* Summary */}
-                    {!activeTab && (
-                        <>
-                            <div className="cart-drawer-summary">
-                                <div className="summary-row">
-                                    <span>Subtotal:</span>
-                                    <span className="summary-value">{subtotal} EGP</span>
-                                </div>
-                                {activeDiscount && (
-                                    <div className="summary-row" style={{ color: '#e74c3c' }}>
-                                        <span>Discount ({activeDiscount.code}):</span>
-                                        <span className="summary-value">-{activeDiscount.amount.toFixed(2)} EGP</span>
-                                    </div>
-                                )}
-                                <div className="summary-row total-row">
-                                    <span>Total:</span>
-                                    <span className="summary-value">{total} EGP</span>
-                                </div>
-                            </div>
-                            <p className="cart-tax-note">Tax included. {settings?.shippingCost || 0} EGP shipping added</p>
-                        </>
-                    )}
-                    <div className="cart-drawer-buttons">
-                        <button className="drawer-checkout-btn" onClick={handleCheckoutClick}>CHECKOUT</button>
-                        <button className="drawer-viewcart-btn" onClick={handleViewCartClick}>VIEW CART</button>
+                        <p className="cart-tax-note">Tax included. {settings?.shippingCost || 0} EGP shipping added</p>
+                        <div className="cart-drawer-buttons">
+                            <button className="drawer-checkout-btn" onClick={handleCheckoutClick}>CHECKOUT</button>
+                            <button className="drawer-viewcart-btn" onClick={handleViewCartClick}>VIEW CART</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            {/* Action Popup Modal */}
+            {activeTab && (
+                <div className="feature-popup-overlay animate-fade" onClick={() => setActiveTab(null)}>
+                    <div className="feature-popup-content animate-slide-in-up" onClick={(e) => e.stopPropagation()}>
+                        {activeTab === 'note' && (
+                            <div className="cart-accordion-content">
+                                <div className="accordion-header">
+                                    <ShoppingBag size={18} />
+                                    <h4>Order Special Instructions</h4>
+                                </div>
+                                <textarea
+                                    value={orderNoteLocal}
+                                    onChange={(e) => setOrderNoteLocal(e.target.value)}
+                                    placeholder="Order special instructions"
+                                />
+                                <div className="accordion-actions">
+                                    <button className="accordion-save-btn" onClick={handleSaveNote}>SAVE</button>
+                                    <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'shipping' && (
+                            <div className="cart-accordion-content">
+                                <div className="accordion-header">
+                                    <Truck size={18} />
+                                    <h4>Estimate Shipping Rates</h4>
+                                </div>
+
+                                <label>Country/Region</label>
+                                <select defaultValue="Egypt">
+                                    <option value="Egypt">Egypt</option>
+                                </select>
+
+                                <label>State</label>
+                                <select defaultValue="Cairo">
+                                    {Object.keys(settings?.shippingRates || defaultShippingRates).map(gov => (
+                                        <option key={gov} value={gov}>{gov}</option>
+                                    ))}
+                                </select>
+
+                                <label>ZIP Code</label>
+                                <input type="text" placeholder="Postal code" />
+
+                                <div className="accordion-actions">
+                                    <button className="accordion-save-btn" onClick={() => setActiveTab(null)}>CALCULATE SHIPPING</button>
+                                    <button className="accordion-cancel-btn" onClick={() => setActiveTab(null)}>CANCEL</button>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'coupon' && (
+                            <div className="cart-accordion-content">
+                                <div className="accordion-header">
+                                    <Tag size={18} />
+                                    <h4>Add A Coupon</h4>
+                                </div>
+                                <p className="coupon-subtitle">Coupon code content</p>
+                                <input
+                                    type="text"
+                                    value={couponCode}
+                                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                />
+                                <div className="accordion-actions">
+                                    <button className="accordion-save-btn" onClick={handleApplyCoupon}>SAVE</button>
+                                    <button className="accordion-cancel-btn" onClick={() => { setActiveTab(null); setCouponCode(''); }}>CANCEL</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </>
     );
 };
 
